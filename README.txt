@@ -1,1 +1,1 @@
-release my test project
+一个使用js开发的炸弹人小游戏
