@@ -3,6 +3,7 @@ import Move from "../libs/MoveInterface";
 import GameObject from "./GameObject";
 
 export default class Player extends GameObject implements Move {
+    public name:string = "player1"
     private player: HTMLImageElement;
     private speed = PlayerAttr.SPEED;
     private map!:number[][];
@@ -59,6 +60,7 @@ export default class Player extends GameObject implements Move {
                 break;
         }
     }
+    
     
     //向右移动
     public moveRight():void{
@@ -151,6 +153,8 @@ export default class Player extends GameObject implements Move {
         }
         
     }
+
+    
 
     public run(paint:CanvasRenderingContext2D):void{
         //this.paint = paint;

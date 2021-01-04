@@ -1,9 +1,11 @@
 import { level1 } from '../libs/MapData';
+import Bomb from './Bomb';
 import Map from './Map'
 import Player from './Player';
 export default class Game{
     private map!:Map;
     private player!:Player;
+    private bomb!:Bomb;
     private paint:CanvasRenderingContext2D;
     //按键是否被按下
     private keydown:boolean = false;
