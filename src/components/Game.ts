@@ -24,7 +24,7 @@ export default class Game{
 
     private initPlayer():void{
         this.player = new Player();
-        this.player.setMap(this.map.getMapData());
+        this.player.setMap(this.map.getMap());
     }
 
     public onKeyPress(keyCode:number):void{

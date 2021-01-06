@@ -1,13 +1,11 @@
 import { cellHeight, CellType, cellWidth } from "../libs/Attrs";
+import GameObject from "./GameObject";
 
-export default class Cell{
-    private x:number;
-    private y:number;
-    private type:number;
+export default class Cell extends GameObject{
+    public type:number;
     private cell:HTMLImageElement;
     constructor(x:number,y:number,type:number){
-        this.x = x;
-        this.y = y;
+        super(x,y);
         this.type = type;
         this.cell = new Image();
         switch(type){
