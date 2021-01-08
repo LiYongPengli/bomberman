@@ -1,5 +1,6 @@
 import { cellHeight, cellWidth, HEIGHT, PlayerAttr, WIDTH } from "../libs/Attrs";
 import Move from "../libs/MoveInterface";
+import Bomb from "./Bomb";
 import GameObject from "./GameObject";
 import { Attachments } from "./Map";
 
@@ -58,6 +59,9 @@ export default class Player extends GameObject implements Move {
                 break;
             case PlayerAttr.FIRE:
                 //放置炸弹
+                if(this.getIsSetBomb()){
+                    this.setBomb()
+                }
                 break;
         }
     }
@@ -110,6 +114,11 @@ export default class Player extends GameObject implements Move {
         this.player.src = this.playerDown[this.index];
     }
 
+    public setBomb():void{
+        let cell = this.map[this.getI()][this.getJ()];
+        cell.Bomb = new Bomb(this.getX(),this.getY(),this);
+    }
+
     public getIsMoveUp():boolean{
         let i = this.getI()-1;
         let cell = this.map[i][this.getJ()].cell;
@@ -120,6 +129,7 @@ export default class Player extends GameObject implements Move {
         }
         return true;
     }
+
 
     public getIsMoveDown():boolean{
         let i = this.getI()+1;
@@ -153,6 +163,15 @@ export default class Player extends GameObject implements Move {
             return true;
         }
         
+    }
+
+    public getIsSetBomb():boolean{
+        let cell = this.map[this.getI()][this.getJ()];
+        if(cell.Bomb){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     

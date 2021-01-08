@@ -51,6 +51,9 @@ export default class Map{
         this.cells.forEach(cell=>{
             cell.forEach(item=>{
                 item.cell.run(paint);
+                if(item.Bomb){
+                    item.Bomb.run(paint);
+                }
             })
         })
     }
