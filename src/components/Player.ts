@@ -1,4 +1,4 @@
-import { cellHeight, cellWidth, HEIGHT, PlayerAttr, WIDTH } from "../libs/Attrs";
+import { cellHeight, cellWidth, GameFrame, HEIGHT, PlayerAttr, WIDTH } from "../libs/Attrs";
 import Move from "../libs/MoveInterface";
 import Bomb from "./Bomb";
 import GameObject from "./GameObject";
@@ -9,6 +9,7 @@ export default class Player extends GameObject implements Move {
     private player: HTMLImageElement;
     private speed = PlayerAttr.SPEED;
     private map!:Attachments[][];
+    private playerRenderTimer:number = 100;
     //向下移动的动画图片
     private playerDown = ['../assets/img/players/down_01.png', '../assets/img/players/down_02.png', '../assets/img/players/down_03.png', '../assets/img/players/down_04.png'];
     //向上移动的动画图片
@@ -25,9 +26,26 @@ export default class Player extends GameObject implements Move {
         this.player.src = this.playerDown[this.index]
     }
 
+    private render(arr:string[]):void{
+        this.player.src = arr[this.index];
+        this.playerRenderTimer -= GameFrame;
+        if(this.playerRenderTimer<=0){
+            this.index++
+            if(this.index>=4){
+                this.index = 0;
+            }
+            this.playerRenderTimer = 100;
+        }
+    }
+
     //设置玩家地图
     public setMap(map:Attachments[][]):void{
         this.map = map;
+    }
+
+    //获取地图数据
+    public getMap():Attachments[][]{
+        return this.map;
     }
 
     //按键监听
@@ -73,9 +91,7 @@ export default class Player extends GameObject implements Move {
         if(this.x>WIDTH-this.width-cellWidth)
             this.x = WIDTH - this.width-cellWidth;
 
-        if((this.index++)>=3)
-            this.index = 0;
-        this.player.src = this.playerRight[this.index];
+        this.render(this.playerRight)
     }
     //向左移动
     public moveLeft():void{
@@ -84,9 +100,7 @@ export default class Player extends GameObject implements Move {
             this.x = cellWidth;
         }
 
-        if((this.index++)>=3)
-            this.index = 0;
-        this.player.src = this.playerLeft[this.index];
+        this.render(this.playerLeft);
         
     }
 
@@ -97,9 +111,7 @@ export default class Player extends GameObject implements Move {
             this.y = cellHeight;
         }
 
-        if((this.index++)>=3)
-            this.index = 0;
-        this.player.src = this.playerUp[this.index];
+        this.render(this.playerUp);
     }
 
     //向下移动
@@ -109,22 +121,20 @@ export default class Player extends GameObject implements Move {
             this.y = HEIGHT-this.height-cellHeight
         }
 
-        if((this.index++)>=3)
-            this.index = 0;
-        this.player.src = this.playerDown[this.index];
+        this.render(this.playerDown);
     }
 
     public setBomb():void{
         let cell = this.map[this.getI()][this.getJ()];
-        cell.Bomb = new Bomb(this.getX(),this.getY(),this);
+        cell.Bomb = new Bomb(this.getJ()*cellWidth,this.getI()*cellHeight,this);
     }
 
     public getIsMoveUp():boolean{
         let i = this.getI()-1;
-        let cell = this.map[i][this.getJ()].cell;
+        let cell = this.map[i][this.getJ()];
 
         let up = i*cellHeight;
-        if(cell.type!=1&&this.y>=(up+cellHeight)){
+        if((cell.cell.type!=1&&this.y>=(up+cellHeight))||cell.Bomb){
             return false;
         }
         return true;
@@ -133,10 +143,10 @@ export default class Player extends GameObject implements Move {
 
     public getIsMoveDown():boolean{
         let i = this.getI()+1;
-        let cell = this.map[i][this.getJ()].cell;
+        let cell = this.map[i][this.getJ()];
 
         let down = i*cellHeight;
-        if(cell.type!=1&&this.y>=(down-cellHeight)){
+        if((cell.cell.type!=1&&this.y>=(down-cellHeight))||cell.Bomb){
             return false;
         }
         return true;
@@ -144,10 +154,10 @@ export default class Player extends GameObject implements Move {
 
     public getIsMoveLeft():boolean{
         let j = this.getJ()-1;
-        let cell = this.map[this.getI()][j].cell;
+        let cell = this.map[this.getI()][j];
 
         let left = j*cellWidth;
-        if(cell.type!=1&&this.x>=(left-cellWidth)){
+        if((cell.cell.type!=1&&this.x>=(left-cellWidth))||cell.Bomb){
             return false;
         }
         return true;
@@ -155,9 +165,9 @@ export default class Player extends GameObject implements Move {
 
     public getIsMoveRight():boolean{
         let j = this.getJ()+1;
-        let cell = this.map[this.getI()][j].cell;
+        let cell = this.map[this.getI()][j];
         let right = j*cellWidth;
-        if(cell.type!=1&&(this.x+cellWidth)>=right){
+        if((cell.cell.type!=1&&(this.x+cellWidth)>=right)||cell.Bomb){
             return false;
         }else{
             return true;
@@ -167,7 +177,7 @@ export default class Player extends GameObject implements Move {
 
     public getIsSetBomb():boolean{
         let cell = this.map[this.getI()][this.getJ()];
-        if(cell.Bomb){
+        if(cell.Bomb&&cell.cell.type!=1){
             return false;
         }else{
             return true;

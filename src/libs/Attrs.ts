@@ -3,6 +3,8 @@ export const HEIGHT = 400;
 
 export const cellWidth = WIDTH/17;
 export const cellHeight = HEIGHT/13;
+//游戏帧速(10毫秒每帧)
+export const GameFrame = 10;
 
 //方块属性
 export enum CellType{
@@ -11,7 +13,7 @@ export enum CellType{
     brick         //砖
 }
 
-//人物移动键盘码
+//人物移动键盘码及其人物属性
 export enum PlayerAttr{
     UP = 119,           //上
     DOWN = 115,         //下
